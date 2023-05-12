@@ -22,7 +22,11 @@ public interface CountryApi {
     Call<Country> getCountryById(@Path("id") Long id);
 
     @GET("/country/find_coin/{name}")
-    Call<Country> getCoinByName(@Path("name") String name);
+    Call<String> getCoinByName(@Path("name") String name);
+
+    @GET("/country/{name}")
+    Call<Country> getCountry(@Path("name") String name);
+
 
     @POST("/country/add")
     Call<Country> addCountry(@Body Country country);
