@@ -5,7 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    tools:context=".Activities.MainActivity">
+    tools:context=".Activities.AddActivity">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:text="Post Request"
+        android:textColor="@color/white"
+        android:textSize="40dp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:id="@+id/LL_top"
@@ -16,20 +28,32 @@
         android:orientation="vertical">
 
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/delete_button"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/country_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:backgroundTint="@color/button"
-            android:ems="15"
+            android:ems="10"
             android:inputType="text"
             android:paddingLeft="20dp"
             android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:text="Delete Country"
-            android:textColor="@color/white" />
+            android:hint="Country Name" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/country_coin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:inputType="text"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
+            android:hint="Country Coin" />
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/add_button"
@@ -43,37 +67,17 @@
             android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:text="Add Country"
-            android:textColor="@color/white" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/update_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="@color/button"
-            android:ems="15"
-            android:inputType="text"
-            android:paddingLeft="20dp"
-            android:paddingTop="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="10dp"
-            android:text="Update Country Data"
-            android:textColor="@color/white" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/get_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="@color/button"
-            android:ems="15"
-            android:inputType="text"
-            android:paddingLeft="20dp"
-            android:paddingTop="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="10dp"
-            android:text="Get Country Data"
+            android:text="Save Country"
             android:textColor="@color/white" />
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/button"
+        android:src="@drawable/ic_back"
+        app:tint="@color/white" />
 </RelativeLayout>

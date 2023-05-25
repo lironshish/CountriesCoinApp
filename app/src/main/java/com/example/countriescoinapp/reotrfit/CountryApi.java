@@ -35,7 +35,7 @@ public interface CountryApi {
     Call<Country> updateCountry(@Body Country country);
 
     @DELETE("/country/delete/{id}")
-    Call<Country> deleteCountry(@Path("id") Long id);
+    Call<Void> deleteCountry(@Path("id") Long id);
 
 
 }

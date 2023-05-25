@@ -1,22 +1,21 @@
-package com.example.countriescoinapp;
-
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.TextView;
+package com.example.countriescoinapp.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+
+import com.example.countriescoinapp.R;
 import com.example.countriescoinapp.model.Country;
 import com.example.countriescoinapp.reotrfit.CountryApi;
 import com.example.countriescoinapp.reotrfit.RetrofitService;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,28 +24,35 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class GetActivity extends AppCompatActivity {
 
+
+    private MaterialTextView title, country_name, country_coin;
     private Spinner spinner;
-    private TextView coin;
-    private Button button;
-    ArrayList<String> countriesNames = new ArrayList<>();
-    private String selectedOption = "", countryCoin = "";
+    private MaterialButton get_button;
+    private FloatingActionButton back_button;
+    private ArrayList<String> countriesNames = new ArrayList<>();
+    private String selectedOption = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_get);
+        findViews();
         init();
     }
 
-    private void init() {
-        //Views
-        spinner = findViewById(R.id.spinner);
-        coin = findViewById(R.id.coin);
-        button = findViewById(R.id.button);
 
+    private void findViews() {
+        title = findViewById(R.id.title);
+        country_name = findViewById(R.id.country_name);
+        country_coin = findViewById(R.id.country_coin);
+        spinner = findViewById(R.id.spinner);
+        get_button = findViewById(R.id.get_button);
+        back_button = findViewById(R.id.back_button);
+    }
+
+    private void init() {
         //Spinner
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, countriesNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -76,22 +82,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        button.setOnClickListener(new View.OnClickListener() {
+        get_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 selectedOption = spinner.getSelectedItem().toString();
 
-                Log.d("pttt", selectedOption);
-                Call<Country> countryCoinCall = countryApi.getCountry(selectedOption);
+                Call<Country> getCountryDataCall = countryApi.getCountry(selectedOption);
 
-                countryCoinCall.enqueue(new Callback<Country>() {
+                getCountryDataCall.enqueue(new Callback<Country>() {
                     @Override
                     public void onResponse(Call<Country> call, Response<Country> response) {
                         Country country = response.body();
-                        Log.d("pttt", "1 "+country.getCoin());
-                        coin.setText(country.getCoin());
-                        Log.d("pttt", country.getCoin());
+                        country_name.setText("Country Name: " + country.getName());
+                        country_coin.setText("Country Coin: " + country.getCoin());
                     }
 
                     @Override
@@ -102,6 +106,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        back_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(GetActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
     }
+
 }
