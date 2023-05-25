@@ -91,7 +91,6 @@ public class DeleteActivity extends AppCompatActivity {
                 for (int i = 0; i < getCountries.size(); i++) {
                     if (getCountries.get(i).getName().equals(selectedOption)) {
                         id = getCountries.get(i).getId();
-                        Log.d("pttt", "id " + id);
                     }
                 }
                 Log.d("pttt", "countries size " + getCountries.size());
