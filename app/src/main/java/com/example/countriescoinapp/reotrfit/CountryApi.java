@@ -31,8 +31,8 @@ public interface CountryApi {
     @POST("/country/add")
     Call<Country> addCountry(@Body Country country);
 
-    @PUT("/country/update")
-    Call<Country> updateCountry(@Body Country country);
+    @PUT("/country/update/{id}")
+    Call<Country> updateCountry(@Path("id") Long id, @Body Country country);
 
     @DELETE("/country/delete/{id}")
     Call<Void> deleteCountry(@Path("id") Long id);

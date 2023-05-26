@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.example.countriescoinapp.CountryService;
 import com.example.countriescoinapp.R;
 import com.example.countriescoinapp.model.Country;
 import com.example.countriescoinapp.reotrfit.CountryApi;
@@ -32,6 +33,7 @@ public class GetActivity extends AppCompatActivity {
     private MaterialButton get_button;
     private FloatingActionButton back_button;
     private ArrayList<String> countriesNames = new ArrayList<>();
+    private ArrayList<Country> countries = new ArrayList<>();
     private String selectedOption = "";
 
     @Override
@@ -58,26 +60,23 @@ public class GetActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        //Retrofit
-        RetrofitService retrofitService = new RetrofitService();
-        CountryApi countryApi = retrofitService.getRetrofit().create(CountryApi.class);
-
-        Call<List<Country>> allCountriesCall = countryApi.getAllCountries();
-        allCountriesCall.enqueue(new Callback<List<Country>>() {
+        CountryService countryService = new CountryService();
+        // Call getAllCountry and provide a callback implementation
+        countryService.getAllCountries(new CountryService.CountriesCallback() {
             @Override
-            public void onResponse(Call<List<Country>> allCountriesCall, Response<List<Country>> response) {
-
-                List<Country> countries = response.body();
-
-                for (int i = 0; i < countries.size(); i++) {
-                    adapter.add(countries.get(i).getName());
+            public void onCountriesReceived(List<Country> countriesResponse) {
+                for (int i = 0; i < countriesResponse.size(); i++) {
+                    adapter.add(countriesResponse.get(i).getName());
+                    Log.d("pttt", countriesResponse.get(i).getName());
                 }
                 adapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onFailure(Call<List<Country>> allCountriesCall, Throwable t) {
-
+            public void onFailure(Throwable t) {
+                // Handle the failure case
+                // Display an error message or perform any other necessary operations
+                Log.e("pttt", "Failed to retrieve countries: " + t.getMessage());
             }
         });
 
@@ -87,19 +86,20 @@ public class GetActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 selectedOption = spinner.getSelectedItem().toString();
-
-                Call<Country> getCountryDataCall = countryApi.getCountry(selectedOption);
-
-                getCountryDataCall.enqueue(new Callback<Country>() {
+                countryService.getCountryData(selectedOption, new CountryService.CountriesCallback() {
                     @Override
-                    public void onResponse(Call<Country> call, Response<Country> response) {
-                        Country country = response.body();
-                        country_name.setText("Country Name: " + country.getName());
-                        country_coin.setText("Country Coin: " + country.getCoin());
+                    public void onCountriesReceived(List<Country> countries) {
+                        for (Country country : countries) {
+                            if (country.getName().equals(selectedOption)) {
+                                country_name.setText("Country Name: " + country.getName());
+                                country_coin.setText("Country Coin: " + country.getCoin());
+                            }
+                        }
+
                     }
 
                     @Override
-                    public void onFailure(Call<Country> call, Throwable t) {
+                    public void onFailure(Throwable t) {
 
                     }
                 });

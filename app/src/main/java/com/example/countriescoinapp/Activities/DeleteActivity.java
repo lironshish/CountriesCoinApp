@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.example.countriescoinapp.CountryService;
 import com.example.countriescoinapp.R;
 import com.example.countriescoinapp.model.Country;
 import com.example.countriescoinapp.reotrfit.CountryApi;
@@ -32,7 +33,7 @@ public class DeleteActivity extends AppCompatActivity {
     private FloatingActionButton back_button;
 
     private ArrayList<String> countriesNames = new ArrayList<>();
-    private ArrayList<Country> getCountries = new ArrayList<>();
+    private ArrayList<Country> countries = new ArrayList<>();
     private String selectedOption = "";
 
 
@@ -59,26 +60,24 @@ public class DeleteActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        //Retrofit
-        RetrofitService retrofitService = new RetrofitService();
-        CountryApi countryApi = retrofitService.getRetrofit().create(CountryApi.class);
-
-        Call<List<Country>> allCountriesCall = countryApi.getAllCountries();
-        allCountriesCall.enqueue(new Callback<List<Country>>() {
+        CountryService countryService = new CountryService();
+        // Call getAllCountry and provide a callback implementation
+        countryService.getAllCountries(new CountryService.CountriesCallback() {
             @Override
-            public void onResponse(Call<List<Country>> allCountriesCall, Response<List<Country>> response) {
-
-                List<Country> countries = response.body();
-                for (int i = 0; i < countries.size(); i++) {
-                    adapter.add(countries.get(i).getName());
-                    getCountries.add(countries.get(i));
+            public void onCountriesReceived(List<Country> countriesResponse) {
+                for (int i = 0; i < countriesResponse.size(); i++) {
+                    countries.add(countriesResponse.get(i));
+                    adapter.add(countriesResponse.get(i).getName());
+                    Log.d("pttt", countriesResponse.get(i).getName());
                 }
                 adapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onFailure(Call<List<Country>> allCountriesCall, Throwable t) {
-
+            public void onFailure(Throwable t) {
+                // Handle the failure case
+                // Display an error message or perform any other necessary operations
+                Log.e("pttt", "Failed to retrieve countries: " + t.getMessage());
             }
         });
 
@@ -88,29 +87,27 @@ public class DeleteActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Long id = Long.valueOf(0);
                 selectedOption = spinner.getSelectedItem().toString();
-                for (int i = 0; i < getCountries.size(); i++) {
-                    if (getCountries.get(i).getName().equals(selectedOption)) {
-                        id = getCountries.get(i).getId();
+                for (int i = 0; i < countries.size(); i++) {
+                    if (countries.get(i).getName().equals(selectedOption)) {
+                        id = countries.get(i).getId();
                     }
                 }
-                Log.d("pttt", "countries size " + getCountries.size());
 
-                Call<Void> deleteCountryCall = countryApi.deleteCountry(id);
-                deleteCountryCall.enqueue(new Callback<Void>() {
+                Long finalId = id;
+                countryService.deleteCountry(id, new CountryService.CountriesCallback() {
                     @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
+                    public void onCountriesReceived(List<Country> countries) {
                         message.setText("The country " + selectedOption + " has been successfully deleted");
                         adapter.notifyDataSetChanged();
-                        Log.d("pttt", "countries size " + getCountries.size());
                     }
 
                     @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
+                    public void onFailure(Throwable t) {
 
                     }
-
-
                 });
+
+
             }
         });
 
@@ -123,4 +120,6 @@ public class DeleteActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }

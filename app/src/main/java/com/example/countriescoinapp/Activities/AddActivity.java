@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.example.countriescoinapp.CountryService;
 import com.example.countriescoinapp.R;
 import com.example.countriescoinapp.model.Country;
 import com.example.countriescoinapp.reotrfit.CountryApi;
@@ -56,22 +57,25 @@ public class AddActivity extends AppCompatActivity {
                 country.setCoin(coin);
                 country.setName(name);
 
-                //Retrofit
-                RetrofitService retrofitService = new RetrofitService();
-                CountryApi countryApi = retrofitService.getRetrofit().create(CountryApi.class);
 
-                Call<Country> addCountryCall = countryApi.addCountry(country);
-                addCountryCall.enqueue(new Callback<Country>() {
+                CountryService countryService = new CountryService();
+                countryService.addCountry(country, new CountryService.CountriesCallback() {
                     @Override
-                    public void onResponse(Call<Country> addCountryCall, Response<Country> response) {
-                        message.setText("The country " + name + " has been successfully added");
+                    public void onCountriesReceived(List<Country> countries) {
+                        for (Country country : countries) {
+                            if (country.getName().equals(name)) {
+                                message.setText("The country " + country.getName() + " has been successfully added");
+
+                            }
+                        }
                     }
 
                     @Override
-                    public void onFailure(Call<Country> addCountryCall, Throwable t) {
+                    public void onFailure(Throwable t) {
 
                     }
                 });
+
             }
         });
 
